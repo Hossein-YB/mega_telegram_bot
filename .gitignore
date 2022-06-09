@@ -7,3 +7,5 @@ venv/
 
 *.iml
 *.xml
+*.session
+base_info.py

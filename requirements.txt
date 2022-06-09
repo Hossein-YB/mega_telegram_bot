@@ -10,4 +10,7 @@ PySocks==1.7.1
 requests==2.27.1
 six==1.16.0
 tenacity==5.1.5
+TgCrypto==1.2.3
 urllib3==1.26.9
+
+peewee~=3.14.10
