@@ -4,21 +4,26 @@ from peewee import IntegerField, CharField, TextField, ForeignKeyField, BitField
 database = SqliteDatabase("bot.db")
 
 
-class Base(Model):
+class BaseModel(Model):
     class Meta:
         database = database
 
 
-class Users(Base):
+class Users(BaseModel):
     user_id = IntegerField(primary_key=True)
-    user_id = CharField(max_length=300)
-    mega_username = CharField(max_length=300)
-    maga_password = CharField(max_length=300)
+    username = CharField(max_length=300, null=True)
+    mega_username = CharField(max_length=300, null=True)
+    maga_password = CharField(max_length=300, null=True)
 
     @classmethod
     def add_user(cls, user_id, username):
         q = cls.insert(user_id=user_id, username=username).on_conflict_ignore(ignore=True)
         q.execute()
+
+    @classmethod
+    def add_mega_info(cls, mega_username,  maga_password, user_id):
+        data = {'mega_username': mega_username, 'maga_password': maga_password}
+        cls.update(data).where(Users.user_id == user_id).execute()
 
     @classmethod
     def admins(cls):
@@ -29,15 +34,16 @@ class Users(Base):
         return users
 
 
-class Admins(Base):
-    admin_id = ForeignKeyField(Users, on_delete=True)
+class Admins(BaseModel):
+    admin_id = ForeignKeyField(Users)
 
     @classmethod
     def add_admin(cls, admin_id):
-        cls.replace(user_id=admin_id).execute()
+        q = cls.insert(admin_id=admin_id).on_conflict_ignore(ignore=True)
+        q.execute()
 
 
-class Files(Base):
+class Files(BaseModel):
     file_id = TextField()
     user_id = ForeignKeyField(Users)
     uploaded = BitField(default=0)
