@@ -9,3 +9,4 @@ venv/
 *.xml
 *.session
 base_info.py
+./base_info.py

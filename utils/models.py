@@ -26,6 +26,11 @@ class Users(BaseModel):
         cls.update(data).where(Users.user_id == user_id).execute()
 
     @classmethod
+    def get_mega_info(cls, user_id):
+        user = cls.get(cls.user_id == user_id)
+        return user
+
+    @classmethod
     def admins(cls):
         t = cls.select(Users.user_id).where(Users.is_admin == 1).tuples()
         users = []
