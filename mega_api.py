@@ -18,6 +18,6 @@ class MegaUser:
     def __str__(self):
         info = self.mega_user.get_user()
         if info:
-            return f"user: {info['name']} email: {info['email']}"
+            return {'name': info['name'], 'email': info['email']}
         else:
-            return f"user with user ID {self.user_info.user_id} don`t have account in Mega"
+            return False
