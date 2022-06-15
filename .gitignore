@@ -3,6 +3,8 @@ venv
 venv/
 .idea
 /.idea
+*/__pycache__/
+__pycache__/
 
 
 *.iml
@@ -10,3 +12,5 @@ venv/
 *.session
 base_info.py
 ./base_info.py
+bot.db
+*.db

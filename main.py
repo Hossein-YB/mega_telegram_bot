@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyromod import listen
 from text import Messages, Buttons
 from utils import create_tables, Admins, Users, Files
 from mega_api import MegaUser
@@ -22,7 +23,7 @@ async def start(client, message):
     Users.add_user(user_id, username)
     buttons = [[InlineKeyboardButton(text=Buttons.start_my_profile, callback_data=Buttons.start_my_profile_call)]]
     msg = Messages.START_MSG.format(message.from_user.first_name)
-    await message.reply(text=msg, reply_markup=InlineKeyboardMarkup(buttons))
+    await app.send_message(chat_id=user_id, text=msg, reply_markup=InlineKeyboardMarkup(buttons))
 
 
 @app.on_callback_query(filters.regex(Buttons.start_my_profile_call))
@@ -38,10 +39,36 @@ async def profile(client, callback_query):
             [InlineKeyboardButton(text=Buttons.profile_history, callback_data=Buttons.profile_history_call)],
         ]
     else:
-        msg = Messages.ADD_PROFILE_MSG
+        msg = Messages.DONT_HAVE_ACCOUNT_MSG
         buttons = [[InlineKeyboardButton(text=Buttons.start_add_account, callback_data=Buttons.start_add_account_call)]]
     await app.edit_message_text(chat_id=chat_id, message_id=message_id, text=msg,
                                 reply_markup=InlineKeyboardMarkup(buttons))
+
+
+@app.on_callback_query(filters.regex(Buttons.start_add_account_call))
+async def add_account(client, callback_query, email=None):
+    chat_id = callback_query.from_user.id
+    email = await client.ask(chat_id, Messages.GET_ACCOUNT_EMAIL_MSG)
+    messages = []
+    try:
+        if "EMAIL" in str(email.entities[0].type):
+            password = await client.ask(chat_id, Messages.GET_ACCOUNT_PASSWORD_MSG)
+        else:
+            password = await email.reply(Messages.IS_NOT_EMAIL_MSG)
+            return await add_account(client, callback_query)
+    except TypeError:
+        password = await email.reply(Messages.IS_NOT_EMAIL_MSG)
+        return await add_account(client, callback_query)
+    res = MegaUser.check_user(email.text, password.text)
+    if res:
+        Users.add_mega_info(mega_username=email.text, maga_password=password.text, user_id=chat_id)
+        await app.delete_messages(chat_id, password.id)
+        await app.send_message(chat_id, Messages.SUCCESS_ADD)
+        await start(client, callback_query)
+    else:
+        await app.send_message(chat_id, Messages.NOT_ADD)
+        await start(client, callback_query)
+
 
 
 @app.on_message(filters.photo | filters.video | filters.document | filters.video_note | filters.audio | filters.voice)
