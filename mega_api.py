@@ -1,4 +1,5 @@
 from mega import Mega
+from mega.errors import RequestError
 from utils import Users
 
 
@@ -7,6 +8,16 @@ class MegaUser:
         self.mega_user = Mega()
         self.user_info = Users.get_mega_info(user_id)
         self.mega_user = self.mega_user.login(email=self.user_info.mega_username, password=self.user_info.maga_password)
+
+    @classmethod
+    def check_user(cls, email, password):
+        meg = Mega()
+        try:
+            meg.login(email, password)
+            return True
+        except RequestError:
+            pass
+            return False
 
     def upload_file(self, file_address):
         path = self.mega_user.find('files')
@@ -21,3 +32,7 @@ class MegaUser:
             return {'name': info['name'], 'email': info['email']}
         else:
             return False
+
+
+if __name__ == "__main__":
+    MegaUser.check_user("wpeaj@hi2.in", "psdk@psdk")
