@@ -58,6 +58,10 @@ class Files(BaseModel):
     def add_file(cls, file_id, user_id, file_type):
         cls.create(file_id=file_id, user_id=user_id, file_type=file_type)
 
+    @classmethod
+    def add_upload_status(cls, uploaded, user_id):
+        data = {'uploaded': uploaded}
+        cls.update(data).where(Users.user_id == user_id).execute()
 
 
 

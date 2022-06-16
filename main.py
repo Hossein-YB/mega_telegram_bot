@@ -62,7 +62,6 @@ async def add_account(client, callback_query, email=None):
     res = MegaUser.check_user(email.text, password.text)
     if res:
         Users.add_mega_info(mega_username=email.text, maga_password=password.text, user_id=chat_id)
-        await app.delete_messages(chat_id, password.id)
         await app.send_message(chat_id, Messages.SUCCESS_ADD)
         await start(client, callback_query)
     else:
@@ -70,13 +69,33 @@ async def add_account(client, callback_query, email=None):
         await start(client, callback_query)
 
 
+async def get_file_info(message):
+    if message.photo:
+        return message.photo.file_id, "photo"
+    elif message.video:
+        return message.video.file_id, "video"
+    elif message.videonote:
+        return message.videonote.file_id, "videonote"
+    elif message.voice:
+        return message.voice.file_id, "voice"
+    elif message.document:
+        return message.document.file_id, "document"
+    elif message.audio:
+        return message.audio.file_id, "audio"
+
 
 @app.on_message(filters.photo | filters.video | filters.document | filters.video_note | filters.audio | filters.voice)
 async def download_media(client, message):
     user_id = message.from_user.id
-    mega = MegaUser(user_id)
-    file_path = await message.download()
-    mega.upload_file(file_path)
+    file_info = await get_file_info(message)
+    Files.add_file(file_id=file_info[0], user_id=user_id, file_type=file_info[0])
+    try:
+        mega = MegaUser(user_id)
+        file_path = await message.download()
+        mega.upload_file(file_path)
+        Files.add_upload_status(1, user_id)
+    except Exception:
+        Files.add_upload_status(0, user_id)
     os.remove(file_path)
 
 
