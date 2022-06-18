@@ -60,7 +60,7 @@ class Files(BaseModel):
 
     @classmethod
     def add_upload_status(cls, uploaded, user_id):
-        data = {'uploaded': uploaded}
+        data = {'uploaded': 1}
         cls.update(data).where(Users.user_id == user_id).execute()
 
 

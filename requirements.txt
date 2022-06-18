@@ -3,14 +3,14 @@ charset-normalizer==2.0.12
 idna==3.3
 mega.py==1.0.8
 pathlib==1.0.1
+peewee==3.14.10
 pyaes==1.6.1
 pycryptodome==3.14.1
 Pyrogram==2.0.27
+pyromod==1.5
 PySocks==1.7.1
 requests==2.27.1
 six==1.16.0
 tenacity==5.1.5
 TgCrypto==1.2.3
 urllib3==1.26.9
-
-peewee~=3.14.10

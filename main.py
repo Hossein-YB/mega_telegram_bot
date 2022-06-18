@@ -88,14 +88,16 @@ async def get_file_info(message):
 async def download_media(client, message):
     user_id = message.from_user.id
     file_info = await get_file_info(message)
-    Files.add_file(file_id=file_info[0], user_id=user_id, file_type=file_info[0])
+    Files.add_file(file_id=file_info[0], user_id=user_id, file_type=file_info[1])
     try:
         mega = MegaUser(user_id)
         file_path = await message.download()
         mega.upload_file(file_path)
         Files.add_upload_status(1, user_id)
-    except Exception:
-        Files.add_upload_status(0, user_id)
+    except Exception as e:
+        with open("meg-error.txt", 'a') as f:
+            f.write(e)
+            pass
     os.remove(file_path)
 
 
