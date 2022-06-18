@@ -70,24 +70,17 @@ async def add_account(client, callback_query, email=None):
 
 
 async def get_file_info(message):
-    if message.photo:
-        return message.photo.file_id, "photo"
-    elif message.video:
-        return message.video.file_id, "video"
-    elif message.videonote:
-        return message.videonote.file_id, "videonote"
-    elif message.voice:
-        return message.voice.file_id, "voice"
-    elif message.document:
-        return message.document.file_id, "document"
-    elif message.audio:
-        return message.audio.file_id, "audio"
+    type_message = str(message.media).split(".")[-1]
+    type_message = type_message.lower()
+    file_id = "message." + type_message + ".file_id"
+    return eval(file_id), type_message
 
 
 @app.on_message(filters.photo | filters.video | filters.document | filters.video_note | filters.audio | filters.voice)
 async def download_media(client, message):
     user_id = message.from_user.id
     file_info = await get_file_info(message)
+    print(file_info)
     Files.add_file(file_id=file_info[0], user_id=user_id, file_type=file_info[1])
     try:
         mega = MegaUser(user_id)
@@ -96,7 +89,7 @@ async def download_media(client, message):
         Files.add_upload_status(1, user_id)
     except Exception as e:
         with open("meg-error.txt", 'a') as f:
-            f.write(e)
+            f.write(e.message)
             pass
     os.remove(file_path)
 
