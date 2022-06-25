@@ -89,7 +89,7 @@ async def download_media(client, message):
         Files.add_upload_status(1, user_id)
     except Exception as e:
         with open("meg-error.txt", 'a') as f:
-            f.write(e.message)
+            f.write(e.args[0])
             pass
     os.remove(file_path)
 
