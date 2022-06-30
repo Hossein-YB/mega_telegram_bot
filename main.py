@@ -54,6 +54,25 @@ async def delete_msg(client, messages_id: dict):
         await asyncio.sleep(1)
 
 
+@app.on_callback_query(filters.regex(Buttons.profile_password_call))
+async def change_password(client, callback_query):
+    messages_id = list()
+    chat_id = callback_query.from_user.id
+    password = await client.ask(chat_id, Messages.WANT_NEW_PASSWD_MSG)
+    messages_id.extend((password.id, password.request.id))
+    email = Users.get_mega_info(chat_id)
+    res = MegaUser.check_user(email.mega_username, password.text)
+    if res:
+        Users.add_mega_info(email.mega_username, password.text, chat_id)
+        ans = await password.reply(Messages.PASSWORD_TRUE)
+        await profile(client, callback_query)
+    else:
+        ans = await password.reply(Messages.PASSWORD_WRONG)
+    messages_id.append(ans.id)
+    res = {chat_id: messages_id}
+    await delete_msg(client, res)
+
+
 @app.on_callback_query(filters.regex(Buttons.start_add_account_call))
 async def add_account(client, callback_query):
     chat_id = callback_query.from_user.id

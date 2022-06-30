@@ -9,6 +9,11 @@ class Messages:
     SUCCESS_ADD = "کاربر عزیز اکانت شما با موفقیت به ربات اضافه شد"
     NOT_ADD = "اطلاعات وارد شده اشتباه است"
 
+    # change password messages
+    WANT_NEW_PASSWD_MSG = "لطفا رمز جدید اکانت را وارد کنید"
+    PASSWORD_TRUE = "رمز شما ویرایش شد"
+    PASSWORD_WRONG = "رمز وارد شده اشتباه هست"
+
 
 class Buttons:
 
@@ -26,4 +31,3 @@ class Buttons:
 
     profile_password = "تغییر رمز"
     profile_password_call = "password_change"
-
