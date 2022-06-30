@@ -3,7 +3,7 @@ class Messages:
     PROFILE_MSG = "پروفایل شما: \n ایمیل: {} \n رمز: {}\n "
     DONT_HAVE_ACCOUNT_MSG = "کاربر عزیز شما اکانتی برای ربات تنظیم نکرده اید"
     GET_ACCOUNT_EMAIL_MSG = "برای اضافه کردن اکانت لطفا ایمیلی که با آن در مگا ثبت نام کرده اید رو ارسال کنید"
-    IS_NOT_EMAIL_MSG = "لطفا در ارسال اطلاعات دقت کنید"
+    IS_NOT_EMAIL_MSG = "لطفا اطلاعات خواسته شده رو با دقت ارسال کنید"
     TIME_OUT_SEND_EMAIL_MSG = "زمان شما برای ارسال ایمیل تمام شد لطفا دوباره از اول اقدام کنید"
     GET_ACCOUNT_PASSWORD_MSG = "لطفا رمز اکانتت رو ارسال کنید"
     SUCCESS_ADD = "کاربر عزیز اکانت شما با موفقیت به ربات اضافه شد"
@@ -13,6 +13,12 @@ class Messages:
     WANT_NEW_PASSWD_MSG = "لطفا رمز جدید اکانت را وارد کنید"
     PASSWORD_TRUE = "رمز شما ویرایش شد"
     PASSWORD_WRONG = "رمز وارد شده اشتباه هست"
+
+    # change email messages
+    WANT_NEW_EMAIL_MSG = "لطفا ایمیل جدید اکانت را وارد کنید"
+    ENTER_NEW_EMAIL = "لطفا یک ایمیل جدید وارد کنید در حال حاضر این ایمیل در ربات وجود دارد"
+    EMAIL_TRUE = "ایمیل شما ویرایش شد"
+    EMAIL_WRONG = "ایمیل وارد شده اشتباه هست"
 
 
 class Buttons:

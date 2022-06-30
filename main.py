@@ -3,6 +3,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod import listen
+from pyrogram.errors.exceptions import MessageNotModified
 from text import Messages, Buttons
 from utils import create_tables, Admins, Users, Files
 from mega_api import MegaUser
@@ -73,6 +74,33 @@ async def change_password(client, callback_query):
     await delete_msg(client, res)
 
 
+@app.on_callback_query(filters.regex(Buttons.profile_email_call))
+async def change_email(client, callback_query):
+    messages_id = list()
+    chat_id = callback_query.from_user.id
+    email = await client.ask(chat_id, Messages.WANT_NEW_EMAIL_MSG)
+    messages_id.extend((email.id, email.request.id))
+    user_info = Users.get_mega_info(chat_id)
+    if email.text != user_info.mega_username:
+        try:
+            if "EMAIL" in str(email.entities[0].type):
+                res = MegaUser.check_user(email.text, user_info.maga_password)
+                if res:
+                    Users.add_mega_info(email.text, user_info.maga_password, chat_id)
+                    ans = await email.reply(Messages.EMAIL_TRUE)
+                    await profile(client, callback_query)
+                else:
+                    ans = await email.reply(Messages.EMAIL_WRONG)
+                messages_id.append(ans.id)
+        except TypeError:
+            await email.reply(Messages.IS_NOT_EMAIL_MSG)
+    else:
+        ans = await email.reply(Messages.ENTER_NEW_EMAIL)
+        messages_id.append(ans.id)
+    res = {chat_id: messages_id}
+    await delete_msg(client, res)
+
+
 @app.on_callback_query(filters.regex(Buttons.start_add_account_call))
 async def add_account(client, callback_query):
     chat_id = callback_query.from_user.id
@@ -125,7 +153,6 @@ async def download_media(client, message):
 @app.on_message(filters.command("admin"))
 async def admin_panel(client, message):
     pass
-
 
 
 app.run()
