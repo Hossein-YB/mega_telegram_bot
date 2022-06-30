@@ -1,3 +1,5 @@
+import asyncio
+
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod import listen
@@ -45,8 +47,15 @@ async def profile(client, callback_query):
                                 reply_markup=InlineKeyboardMarkup(buttons))
 
 
+async def delete_msg(client, messages_id: dict):
+    chat_id, message_id = *messages_id.keys(), *messages_id.values()
+    for msg_id in message_id:
+        await client.delete_messages(chat_id, msg_id)
+        await asyncio.sleep(1)
+
+
 @app.on_callback_query(filters.regex(Buttons.start_add_account_call))
-async def add_account(client, callback_query, email=None):
+async def add_account(client, callback_query):
     chat_id = callback_query.from_user.id
     email = await client.ask(chat_id, Messages.GET_ACCOUNT_EMAIL_MSG)
     messages = []
@@ -87,11 +96,11 @@ async def download_media(client, message):
         file_path = await message.download()
         mega.upload_file(file_path)
         Files.add_upload_status(1, user_id)
+        os.remove(file_path)
     except Exception as e:
         with open("meg-error.txt", 'a') as f:
             f.write(e.args[0])
             pass
-    os.remove(file_path)
 
 
 @app.on_message(filters.command("admin"))
