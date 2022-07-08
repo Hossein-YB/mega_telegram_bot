@@ -9,13 +9,14 @@ from utils import create_tables, Admins, Users, Files
 from mega_api import MegaUser
 import os
 from tools import generic_file_cod
+from base_info import *
 
 create_tables()
 Admins.add_admin(1112519901)
 app = Client(
     "upload_file",
-    api_id=18283899,
-    api_hash="f97be58eb771961044e0a347342adda0",
+    api_id=API_ID,
+    api_hash=HASH,
     bot_token='5189309634:AAHOMbcx-2maCpo5_8xsyzU7YCXv1MijYv8'
 )
 

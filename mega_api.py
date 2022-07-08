@@ -34,5 +34,3 @@ class MegaUser:
             return False
 
 
-if __name__ == "__main__":
-    MegaUser.check_user("wpeaj@hi2.in", "psdk@psdk")

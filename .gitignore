@@ -7,6 +7,7 @@ venv/
 __pycache__/
 
 
+base_info.py
 *.iml
 *.xml
 *.session
