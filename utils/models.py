@@ -1,6 +1,7 @@
 from peewee import SqliteDatabase, Model
 from playhouse.migrate import migrate, SqliteMigrator
 from peewee import IntegerField, CharField, TextField, ForeignKeyField, BitField, DateTimeField
+from peewee import OperationalError
 import datetime
 
 
@@ -69,9 +70,13 @@ class Files(BaseModel):
 
 
 datetime_upload = DateTimeField(default=datetime.datetime.now(), formats="%Y-%m-%d %H:%M:%S")
-migrate(
-        migrator.add_column('files', 'datetime_upload', datetime_upload)
-    )
+
+try:
+    migrate(
+            migrator.add_column('files', 'datetime_upload', datetime_upload)
+        )
+except OperationalError:
+    pass
 
 
 
