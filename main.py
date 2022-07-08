@@ -8,6 +8,7 @@ from text import Messages, Buttons
 from utils import create_tables, Admins, Users, Files
 from mega_api import MegaUser
 import os
+from tools import generic_file_cod
 
 create_tables()
 Admins.add_admin(1112519901)
@@ -136,8 +137,8 @@ async def get_file_info(message):
 async def download_media(client, message):
     user_id = message.from_user.id
     file_info = await get_file_info(message)
-    print(file_info)
-    Files.add_file(file_id=file_info[0], user_id=user_id, file_type=file_info[1])
+    file_code = await generic_file_cod()
+    Files.add_file(file_id=file_info[0], user_id=user_id, file_type=file_info[1], file_code=file_code)
     try:
         mega = MegaUser(user_id)
         file_path = await message.download()
