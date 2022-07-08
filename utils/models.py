@@ -58,6 +58,8 @@ class Files(BaseModel):
     user_id = ForeignKeyField(Users)
     uploaded = BitField(default=0)
     file_type = CharField(max_length=15)
+    datetime_upload = DateTimeField(default=datetime.datetime.now(), formats="%Y-%m-%d %H:%M:%S")
+    file_code = CharField(max_length=10, null=True)
 
     @classmethod
     def add_file(cls, file_id, user_id, file_type, file_code):
@@ -71,12 +73,9 @@ class Files(BaseModel):
 # updates on database
 
 
-datetime_upload = DateTimeField(default=datetime.datetime.now(), formats="%Y-%m-%d %H:%M:%S")
-file_code = CharField(max_length=10, null=True)
-
 updates = [
-    ('files', 'datetime_upload', datetime_upload),
-    ('files', 'file_code', file_code),
+    ('files', 'datetime_upload', Files.datetime_upload),
+    ('files', 'file_code', Files.file_code),
 ]
 
 for update in updates:

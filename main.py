@@ -126,6 +126,17 @@ async def add_account(client, callback_query):
         await start(client, callback_query)
 
 
+@app.on_callback_query(filters.regex(Buttons.profile_history_call))
+async def history(client, callback_query):
+    chat_id = callback_query.from_user.id
+    msg = Messages.HISTORY_MSG
+    files = Files.select(Files.id, Files.file_code, Files.file_type).where(Files.user_id == chat_id).order_by(
+        Files.datetime_upload.desc()).limit(10)
+    for file in files:
+        msg = msg + str(file.id) + f" /code{file.file_code}" + " " + str(file.file_type) + "\n"
+    await app.send_message(chat_id=chat_id, text=msg)
+
+
 async def get_file_info(message):
     type_message = str(message.media).split(".")[-1]
     type_message = type_message.lower()

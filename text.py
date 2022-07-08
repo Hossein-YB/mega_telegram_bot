@@ -20,6 +20,9 @@ class Messages:
     EMAIL_TRUE = "ایمیل شما ویرایش شد"
     EMAIL_WRONG = "ایمیل وارد شده اشتباه هست"
 
+    # history messages
+    HISTORY_MSG = "10 تا از آخرین فایل های آپلودی های شما \n"
+
 
 class Buttons:
 
