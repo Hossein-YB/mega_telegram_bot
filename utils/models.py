@@ -68,15 +68,22 @@ class Files(BaseModel):
         data = {'uploaded': 1}
         cls.update(data).where(cls.file_id == file_id).execute()
 
+# updates on database
+
 
 datetime_upload = DateTimeField(default=datetime.datetime.now(), formats="%Y-%m-%d %H:%M:%S")
+file_code = CharField(max_length=10, null=True)
 
-try:
-    migrate(
-            migrator.add_column('files', 'datetime_upload', datetime_upload)
-        )
-except OperationalError:
-    pass
+updates = [
+    ('files', 'datetime_upload', datetime_upload),
+    ('files', 'file_code', file_code),
+]
+
+for update in updates:
+    try:
+        migrate(migrator.add_column(*update))
+    except OperationalError:
+        pass
 
 
 
