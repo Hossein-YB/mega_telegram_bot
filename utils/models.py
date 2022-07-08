@@ -1,7 +1,11 @@
 from peewee import SqliteDatabase, Model
-from peewee import IntegerField, CharField, TextField, ForeignKeyField, BitField
+from playhouse.migrate import migrate, SqliteMigrator
+from peewee import IntegerField, CharField, TextField, ForeignKeyField, BitField, DateTimeField
+import datetime
+
 
 database = SqliteDatabase("bot.db")
+migrator = SqliteMigrator(database)
 
 
 class BaseModel(Model):
@@ -63,6 +67,11 @@ class Files(BaseModel):
         data = {'uploaded': 1}
         cls.update(data).where(cls.file_id == file_id).execute()
 
+
+datetime_upload = DateTimeField(default=datetime.datetime.now(), formats="%Y-%m-%d %H:%M:%S")
+migrate(
+        migrator.add_column('files', 'datetime_upload', datetime_upload)
+    )
 
 
 
