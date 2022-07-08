@@ -60,8 +60,8 @@ class Files(BaseModel):
     file_type = CharField(max_length=15)
 
     @classmethod
-    def add_file(cls, file_id, user_id, file_type):
-        cls.create(file_id=file_id, user_id=user_id, file_type=file_type)
+    def add_file(cls, file_id, user_id, file_type, file_code):
+        cls.create(file_id=file_id, user_id=user_id, file_type=file_type, file_code=file_code)
 
     @classmethod
     def add_upload_status(cls, uploaded, file_id):
